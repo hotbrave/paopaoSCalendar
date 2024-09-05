@@ -202,7 +202,8 @@ public struct CalendarGrid<DateView>: View where DateView: View {
                         
                         //weekLabelText = "\(year)年\(month)月"
                         //weekLabelText = "\(year)年"
-                        updateWeekLabelText(with: "\(year)年\(month)月")
+                        //updateWeekLabelText(with: "\(year)年\(month)月") //每月更新title显示
+                        updateWeekLabelText(with: "\(year)年")//每年更新title显示
                         
                     } else {
                         print("Visible Section ID is nil.")
@@ -224,6 +225,9 @@ public struct CalendarGrid<DateView>: View where DateView: View {
         }
         
     }
+    /**
+        更新title显示年和月的方法
+     */
     public func updateWeekLabelText(with newText: String) {
         self.weekLabelText = newText
     }
