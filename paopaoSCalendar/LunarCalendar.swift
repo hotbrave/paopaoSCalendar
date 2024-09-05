@@ -36,10 +36,24 @@ struct LunarCalendar: View {
     var body: some View {
         
         VStack(alignment: .center, spacing: 0, content: {
-            CalendarWeek(labelText: weekLabelText)
-                .frame(height: 30.0)
+            Text(String(weekLabelText))
+            HStack{
+                ForEach(1...7, id: \.self) { count in
+                    Text(Tool.getWeek(week: count))
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 50)
+                }
+            }.background(Color.brown)
+                
             
+
+            
+            
+            
+            
+            ///////////////////////////////
             //这里初始化日历启动时显示的时间范围
+            
             CalendarGrid(interval: lastTenYears,weekLabelText: $weekLabelText) { date in
                 
                 CalenderDay(day: Tool.getDay(date: date),
@@ -54,6 +68,13 @@ struct LunarCalendar: View {
                         }
                     }
             }
+            
+            ////////////////////////
+            
+            
+            
+            
+            
         })
         .padding([.leading, .trailing], 10.0)
         /*
@@ -103,6 +124,7 @@ public struct CalendarGrid<DateView>: View where DateView: View {
     let content: (Date) -> DateView
     
     @Binding var weekLabelText: String
+    @State private var isLoading: Bool = false
     //let log=OSLog(subsystem: "com.paopaobox.calendar", category: "YourCategory")
     
     public init(interval: DateInterval, showHeaders: Bool = true,weekLabelText: Binding<String>, @ViewBuilder content: @escaping (Date) -> DateView) {
@@ -141,6 +163,19 @@ public struct CalendarGrid<DateView>: View where DateView: View {
                         }
                         .id(getYearMonthSectionID(for: month))//修改成用年和月做SectionID
                         
+                        .gesture(
+                            DragGesture(minimumDistance: 10)
+                                .onChanged { value in
+                                    //draggedMonthIndex = monthIndex
+                                    //updateCurrentYearAndMonth(with: value)
+                                    print("aaaa")
+                                }
+                                .onEnded { _ in
+                                    //draggedMonthIndex = nil
+                                    print("bbb")
+                                }
+                        )
+                        
                         .background(
                             GeometryReader { geometry in
                                 Color.clear.preference(key: SectionIDPreferenceKey.self, value: getYearMonthSectionID(for: month))
@@ -166,7 +201,8 @@ public struct CalendarGrid<DateView>: View where DateView: View {
                         }
                         
                         //weekLabelText = "\(year)年\(month)月"
-                        weekLabelText = "\(year)年"
+                        //weekLabelText = "\(year)年"
+                        updateWeekLabelText(with: "\(year)年\(month)月")
                         
                     } else {
                         print("Visible Section ID is nil.")
@@ -181,20 +217,40 @@ public struct CalendarGrid<DateView>: View where DateView: View {
                 }
                 
 
-                Text("LazyVGrid Height: \(gridHeight)")
-                Text("LazyVGrid gridHeighttemp2: \(gridHeighttemp2)")
-                // 在闭包外部输出 month 变量的值
-                /*
-                let monthsString = arrayMonths.map { month in
-                    return "\(month)"
-                }
-                Text("所有月份的值：\(monthsString)")
-                */
+               // Text("LazyVGrid Height: \(gridHeight)")
+                //Text("LazyVGrid gridHeighttemp2: \(gridHeighttemp2)")
+
             }
         }
         
     }
+    public func updateWeekLabelText(with newText: String) {
+        self.weekLabelText = newText
+    }
+/*
+    public func updateWeekLabelText(with newText: String) {
+        // 显示加载提示
+        self.isLoading = true
 
+        // 在后台线程中执行异步任务
+        DispatchQueue.global().async {
+            // 模拟数据加载过程
+            // 假设这里是您实际的数据加载逻辑
+            // 例如从网络请求数据等
+            Thread.sleep(forTimeInterval: 2)
+
+            // 返回主线程更新 UI
+            DispatchQueue.main.async {
+                // 更新数据
+                // 使用 withAnimation 修饰符包装界面更新操作
+                withAnimation {
+                    self.weekLabelText = newText
+                    self.isLoading = false
+                }
+            }
+        }
+    }
+    */
     
     ///获取当前是几年几月,并进行滚动到那里
     private func getYearMonthScroolSectionID() -> Int {
@@ -295,15 +351,12 @@ public struct CalendarGrid<DateView>: View where DateView: View {
 /*
  顶部的星期和按钮
  */
+/*
 public struct CalendarWeek: View {
-    
-    //@State private var labelText = "Hello, World!"
-    var labelText: String
     public var body: some View {
 
-        //Text(Tool.getDay(date: Date())+"年")
+
         Text(String(labelText))
-        //CalendarGrid()
         HStack{
             ForEach(1...7, id: \.self) { count in
                 Text(Tool.getWeek(week: count))
@@ -314,7 +367,7 @@ public struct CalendarWeek: View {
     }
 }
 
-
+*/
 
 /*
  日历网格里的每一天
@@ -346,23 +399,7 @@ struct CalenderDay: View {
                 RoundedRectangle(cornerRadius: 5).stroke( isToday ? Color.orange : Color.clear, lineWidth: 2)
             )
             
-//                VStack{
-//                    HStack{
-//                        Spacer()
-//                        ZStack{
-//                            Circle()
-//                                .frame(width: 15.0, height: 15.0)
-//                                .foregroundColor(Color.red)
-//
-//                            Text("休")
-//                                .font(.system(size: 10))
-//                                .fontWeight(.medium)
-//                                .padding(.all, 2.0)
-//                                .foregroundColor(.white)
-//                        }
-//                    }
-//                    Spacer()
-//                }
+
 
         }
         
