@@ -12,6 +12,10 @@ struct LunarCalendar: View {
     @Environment(\.calendar) var calendar
     @Environment(\.presentationMode) var mode
     @State private var weekLabelText: String = "Hello, world3331333!"
+    
+    @State private var beginYear = -1 //日期启动时的开始年，动态改这个值就可以增加显示年份
+    @State private var endYear = 1 //日期启动时的结束年，动态改这个值就可以增加显示年份
+    
     /**
      获取今年的时间间隔用于展示日历，需要修改
      */
@@ -22,8 +26,8 @@ struct LunarCalendar: View {
     private var lastTenYears: DateInterval {
         let currentDate = Date()
         let calendar = Calendar.current
-        let tenYearsAgo = calendar.date(byAdding: .year, value: -1, to: currentDate)!
-        let tenYearsLater = calendar.date(byAdding: .year, value: 1, to: currentDate)!
+        let tenYearsAgo = calendar.date(byAdding: .year, value: beginYear, to: currentDate)!
+        let tenYearsLater = calendar.date(byAdding: .year, value: endYear, to: currentDate)!
         return DateInterval(start: tenYearsAgo, end: tenYearsLater)
     }
     
@@ -36,6 +40,22 @@ struct LunarCalendar: View {
     var body: some View {
         
         VStack(alignment: .center, spacing: 0, content: {
+            
+            // 添加新行按钮
+            Button(action: {
+                //let newItem = (items.last ?? 0) + 1
+                //items.append(newItem)  // 添加新元素到数组
+                beginYear = -10
+                endYear = 10
+            }) {
+                Text("添加新行")
+                    .padding()
+                    .background(Color.green)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+            }
+            .padding()
+            
             Text(String(weekLabelText))
             HStack{
                 ForEach(1...7, id: \.self) { count in
@@ -161,7 +181,7 @@ public struct CalendarGrid<DateView>: View where DateView: View {
 
                             }
                         }
-                        .id(getYearMonthSectionID(for: month))//修改成用年和月做SectionID
+                        .id(getYearMonthSectionID(for: month))//修改成用年和月做SectionID，做这个id标记是给自动滚动到今天或者判断滚动到什么位置了使用
                         
                         .gesture(
                             DragGesture(minimumDistance: 10)
@@ -185,8 +205,8 @@ public struct CalendarGrid<DateView>: View where DateView: View {
                     }
                 }
                 .onPreferenceChange(SectionIDPreferenceKey.self) { value in
-                    visibleSectionID = value
-                   // print("Visible Section ID: \(visibleSectionID ?? -1)")
+                    visibleSectionID = value    //visibleSectionID 里是年和月 格式是 202409
+                    //print("Visible Section ID: \(visibleSectionID ?? -1)")
                     
                     if let visibleSectionIDtemp = visibleSectionID {
                         var year = visibleSectionIDtemp / 100 // 假设整数部分代表年份
@@ -228,10 +248,13 @@ public struct CalendarGrid<DateView>: View where DateView: View {
     /**
         更新title显示年和月的方法
      */
+    /*
     public func updateWeekLabelText(with newText: String) {
         self.weekLabelText = newText
     }
-/*
+    */
+    
+
     public func updateWeekLabelText(with newText: String) {
         // 显示加载提示
         self.isLoading = true
@@ -241,7 +264,7 @@ public struct CalendarGrid<DateView>: View where DateView: View {
             // 模拟数据加载过程
             // 假设这里是您实际的数据加载逻辑
             // 例如从网络请求数据等
-            Thread.sleep(forTimeInterval: 2)
+            Thread.sleep(forTimeInterval: 0.1)
 
             // 返回主线程更新 UI
             DispatchQueue.main.async {
@@ -254,7 +277,7 @@ public struct CalendarGrid<DateView>: View where DateView: View {
             }
         }
     }
-    */
+    
     
     ///获取当前是几年几月,并进行滚动到那里
     private func getYearMonthScroolSectionID() -> Int {
@@ -491,3 +514,4 @@ extension Calendar {
         return dates
     }
 }
+
