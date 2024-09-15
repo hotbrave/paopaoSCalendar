@@ -8,29 +8,6 @@
 import Foundation
 
 struct Tool {
-    /*
-    static func getWeek(week: Int) -> String{
-        switch week {
-        case 0:
-            return "周日"
-        case 1:
-            return "周一"
-        case 2:
-            return "周二"
-        case 3:
-            return "周三"
-        case 4:
-            return "周四"
-        case 5:
-            return "周五"
-        case 6:
-            return "周六"
-        default:
-            return ""
-        }
-    }
-    */
-    
     static func getWeek(week: Int) -> String{
         switch week {
         case 1:
@@ -51,8 +28,7 @@ struct Tool {
             return ""
         }
     }
-    
-    
+
     static let chineseHoliDay:[String:String] = ["1-1":"春节",
                                                  "1-15":"元宵节",
                                                  "2-2":"龙抬头",
@@ -152,7 +128,6 @@ struct Tool {
         
         return nil
     }
-    
     
     static func isWeekDay(date: Date) -> Bool{
         switch date.getWeekDay() {
