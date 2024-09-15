@@ -132,6 +132,7 @@ public struct CalendarGrid<DateView>: View where DateView: View {
                             }
                         }
                         .id(getYearMonthSectionID(for: month))//修改成用年和月做SectionID，做这个id标记是给自动滚动到今天或者判断滚动到什么位置了使用
+                        //let _ = print("getYearMonthSectionID====\(getYearMonthSectionID(for: month))")
                         .gesture(
                             DragGesture(minimumDistance: 10)
                                 .onChanged { value in
@@ -239,7 +240,7 @@ public struct CalendarGrid<DateView>: View where DateView: View {
         
         // 将年和月组合成一个唯一的整数作为 Section ID
         let sectionID = year * 100 + month
-        //print("sectionID====\(sectionID)")
+       // print("sectionID====\(sectionID)")
         return sectionID
     }
     
